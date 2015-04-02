@@ -1,0 +1,65 @@
+# HOSTGROUP DEFINITION
+######################
+define hostgroup {
+		hostgroup_name	example
+		alias		    example
+		members		    srv.example.ru
+}
+######################
+# HOSTS DEFINITION
+######################
+define host {
+		use			    generic-host
+		host_name		srv.example.ru
+		alias			srv.example.ru
+		address			127.0.0.1
+}
+
+#############################
+# DEFAULT SERVICES DEFINITION
+#############################
+define service {
+                use                             example-service
+                hostgroup                       example
+                service_description             ssh
+                check_command                   check_ssh
+}
+define service {
+                use                             example-service
+                hostgroup                       example
+                service_description             CPU and swap
+                check_command                   check_cpuswap_snmp
+}
+define service {
+                use                             example-slow-service
+                hostgroup                       example
+                service_description             filesystems
+                check_command                   check_disk_snmp
+}
+define service {
+                use                             example-slow-service
+                hostgroup                       example
+                service_description             system_check
+                check_command                   check_snmp_proc
+}
+define service {
+                use                             example-slow-service
+                hostgroup                       example
+                service_description             raid
+                check_command                   check_log_snmp!raidmon
+}
+######################
+# SERVICES DEFINITION
+######################
+define service {
+		use				    example-service
+		host_name			srv.example.ru
+		service_description	mysql
+		check_command       check_mysql_host!127.0.0.1
+}
+define service {
+		use				    example-service
+		host_name			srv.example.ru
+		service_description	mysql_repl
+		check_command       check_mysql_repl_ex!slave.example.ru!600!1200
+}

@@ -1,0 +1,27 @@
+# HOSTGROUP DEFINITION
+######################
+define hostgroup {
+		hostgroup_name	http-pages
+		alias			http-pages
+		members			http-pages.example.ru
+}
+######################
+# HOSTS DEFINITION
+######################
+define host {
+		use				generic-host
+		host_name		http-pages.example.ru
+		alias			http-pages.example.ru
+		address			127.0.0.1
+}
+######################
+# SERVICES DEFINITION
+######################
+
+define service {
+		use					example-service
+		host_name			http-pages.example.ru
+		service_description	example.ru-main
+		check_command       check_http_ip_size!example.ru!example.ru!/check.php?page=main!80
+}
+######################

@@ -1,0 +1,31 @@
+# HOSTGROUP DEFINITION
+######################
+define hostgroup {
+		hostgroup_name	swtiches
+		alias		swtiches
+		members		sw0.example.ru
+}
+######################
+# HOSTS DEFINITION
+######################
+define host {
+		use			generic-host
+		host_name		sw0.example.ru
+		alias			sw0.example.ru
+		address			127.0.0.1
+}
+#############################
+# DEFAULT SERVICES DEFINITION
+#############################
+define service {
+		use				example-service
+		hostgroup			swtiches
+		service_description		CPU usage
+		check_command                   check_cisco_cpu_usage!80!90
+}
+define service {
+		use				example-service
+		hostgroup			swtiches
+		service_description		Traffic
+		check_command                   check_cisco_traf
+}

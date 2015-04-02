@@ -1,0 +1,40 @@
+#!/bin/bash
+
+SERVICE=/var/service/icinga
+ICINGA_CFG="/www/icinga/htdocs/etc/icinga.cfg"
+ICINGA="/www/icinga/htdocs/bin/icinga"
+ICINGA_EXT_CFG="/www/icinga/htdocs/extinfo_hosts.cfg"
+
+function gen_host_notes() {
+	BASE_URL="https://netmrg/summary.cgi?dev="
+
+	true > $ICINGA_EXT_CFG
+
+	for CFG in `cat $ICINGA_CFG | grep "/cfg.*$"`; do
+		FILE=`echo $CFG | awk -F= '{print $2}'`
+		for h in `cat $FILE | grep -A3 "define host" | grep host_name | sort | uniq  | grep -v "," | awk '{print $2}' | grep -v http.relax.ru | grep -v http-pages.relax.ru | grep -v backup.relax.ru`; do
+			echo "define hostextinfo {" >> $ICINGA_EXT_CFG
+			echo "	  host_name  $h" >> $ICINGA_EXT_CFG
+			echo "	  notes_url  $BASE_URL$h" >> $ICINGA_EXT_CFG
+			echo "}" >> $ICINGA_EXT_CFG
+		done
+	done
+}
+
+echo Rebuilding host extended info...
+gen_host_notes
+echo Checking config...
+$ICINGA -v $ICINGA_CFG > /tmp/nagout 2>&1
+if [ $? -ne 0 ]; then
+        echo Config NOT ok: do not restarting.;
+        cat /tmp/nagout;
+        rm /tmp/nagout;
+        exit
+fi
+grep -i warning /tmp/nagout
+rm /tmp/nagout;
+echo Config OK.
+
+sleep 1
+/etc/init.d/icinga restart
+echo Done.
