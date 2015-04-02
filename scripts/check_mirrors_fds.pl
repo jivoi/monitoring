@@ -65,7 +65,7 @@ sub check_mirr {
     my $mrr=$name . "[" . $host . "]:" . $port;
    
     my $mrrsrv=""; 
-    ($mrrsrv = $name) =~ s/\w+-(\w+)\.(.*\.)?(\w+)\.(\w+)$/$1.rbc.$4/ ;
+    ($mrrsrv = $name) =~ s/\w+-(\w+)\.(.*\.)?(\w+)\.(\w+)$/$1.example.$4/ ;
 
     my $ss = IO::Socket::INET->new(
     	'PeerAddr'	=> $mrrsrv,

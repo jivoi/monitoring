@@ -4,7 +4,7 @@ HOSTADDRESS=$1
 
 if /usr/local/bin/mysql -h $HOSTADDRESS -u monitoring -pP@ssw0rd -Be 'select * from dummy' monitoring > /dev/null 2>&1; then
 	
-	`/usr/local/bin/mysql -h moo.rbc.ru -u monitoring -pP@ssw0rd --skip-column-names -Be "
+	`/usr/local/bin/mysql -h example.ru -u monitoring -pP@ssw0rd --skip-column-names -Be "
 
 		show variables like 'max_connections';
 		show status like 'Threads_connected';
